@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Login - Game Edukasi Ular Tangga Narkotika</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap');
+  :root {
+    --color-bg: #ffffff;
+    --color-text-base: #6b7280;
+    --color-primary: #111827;
+    --color-primary-light: #374151;
+    --color-secondary: #2563eb;
+    --border-radius: 0.75rem;
+    --shadow-light: rgba(0, 0, 0, 0.05);
+    --transition-speed: 0.3s;
+  }
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+  body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    background: var(--color-bg);
+    color: var(--color-text-base);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  header {
+    position: sticky;
+    top: 0;
+    background: var(--color-bg);
+    border-bottom: 1px solid var(--shadow-light);
+    padding: 1.5rem 2rem;
+    font-weight: 700;
+    font-size: 3rem;
+    color: var(--color-primary);
+    user-select: none;
+    text-align: center;
+    box-shadow: 0 4px 8px var(--shadow-light);
+    z-index: 20;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  #headerLogo {
+    position: absolute;
+    top: 8px;
+    right: 16px;
+    height: 48px;
+    width: 48px;
+    border-radius: 9999px;
+    overflow: hidden;
+    box-shadow: 0 0 8px var(--shadow-light);
+    user-select: none;
+  }
+  #headerLogo img {
+    height: 100%;
+    width: 100%;
+    object-fit: contain;
+  }
+  main {
+    max-width: 640px;
+    margin: 4rem auto 4rem;
+    padding: 0 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+  #loginSection, #scoreSection {
+    background: white;
+    padding: 2rem 2.5rem;
+    border-radius: var(--border-radius);
+    box-shadow: 0 8px 24px var(--shadow-light);
+  }
+  h2 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--color-primary);
+    margin-bottom: 1.5rem;
+    user-select: none;
+    text-align: center;
+  }
+  label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 0.3rem;
+    color: var(--color-primary-light);
+  }
+  input[type="text"] {
+    width: 100%;
+    padding: 0.8rem 1.2rem;
+    font-size: 1.1rem;
+    border: 2px solid var(--shadow-light);
+    border-radius: var(--border-radius);
+    margin-bottom: 1.5rem;
+    transition: border-color var(--transition-speed);
+  }
+  input[type="text"]:focus {
+    border-color: var(--color-secondary);
+    outline: none;
+  }
+  button {
+    background-color: var(--color-secondary);
+    color: white;
+    padding: 0.9rem 2.5rem;
+    font-weight: 700;
+    font-size: 1.3rem;
+    border: none;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: background-color var(--transition-speed);
+    user-select: none;
+    display: block;
+    margin: 0 auto;
+    max-width: 220px;
+    text-align: center;
+  }
+  button:hover,
+  button:focus {
+    background-color: #1d4ed8;
+    outline: none;
+  }
+  #leaderboardToggleBtn {
+    margin-top: 1.5rem;
+    padding: 0.8rem 2.2rem;
+    font-weight: 600;
+    font-size: 1.1rem;
+    border-radius: var(--border-radius);
+    border: 2px solid var(--color-secondary);
+    background: white;
+    color: var(--color-secondary);
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    user-select: none;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 240px;
+  }
+  #leaderboardToggleBtn:hover,
+  #leaderboardToggleBtn:focus {
+    background-color: var(--color-secondary);
+    color: white;
+    outline: none;
+  }
+  #scoresTable {
+    width: 100%;
+    border-collapse: collapse;
+    user-select: none;
+  }
+  #scoresTable thead {
+    background-color: var(--color-secondary);
+    color: white;
+    font-weight: 700;
+  }
+  #scoresTable th, #scoresTable td {
+    text-align: left;
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid var(--shadow-light);
+  }
+  #scoresTable tbody tr:last-child td {
+    border-bottom: none;
+  }
+  #scoresTable tbody tr:hover {
+    background-color: #f0faff;
+  }
+  .center-text {
+    text-align: center;
+  }
+  #scoresDesc {
+    margin-top: 0.5rem;
+    font-size: 0.9rem;
+    color: var(--color-primary-light);
+    user-select: none;
+    text-align: center;
+  }
+  @media (max-width: 600px) {
+    header {
+      font-size: 2.4rem;
+      padding: 1rem 1.5rem;
+    }
+    main {
+      max-width: 100%;
+      margin: 2rem 1rem 3rem;
+    }
+    button, #leaderboardToggleBtn {
+      width: 100%;
+      max-width: none;
+    }
+  }
+</style>
+</head>
+<body>
+<header>
+  Game Edukasi Ular Tangga Narkotika
+  <div id="headerLogo" aria-label="Logo SMAGA Unggulan Tenggarong" role="img" title="SMAGA Unggulan Tenggarong">
+    <img src="https://pbs.twimg.com/profile_images/2461744237/sman_3_400x400.png" alt="Logo SMAGA Unggulan Tenggarong" />
+  </div>
+</header>
+<main>
+  <section id="loginSection" aria-label="Form login pemain">
+    <h2>Masuk untuk Memulai Permainan</h2>
+    <form id="loginForm" aria-label="Form masuk pemain" novalidate>
+      <label for="playerName">Nama Pemain</label>
+      <input type="text" id="playerName" name="playerName" required placeholder="Masukkan nama asli atau panggilan" autocomplete="off" aria-required="true" aria-describedby="nameHelp" />
+      <small id="nameHelp">Gunakan nama asli atau panggilan Anda (minimal 2 karakter)</small>
+      <button type="submit" aria-label="Mulai permainan">Mulai</button>
+    </form>
+    <button id="leaderboardToggleBtn" type="button" aria-label="Tampilkan dan sembunyikan leaderboard" style="margin-top: 1rem;">Lihat Daftar Skor Tertinggi</button>
+  </section>
+
+  <section id="scoreSection" aria-label="Daftar skor tertinggi pemain" hidden>
+    <h2>Daftar Skor Tertinggi</h2>
+    <table id="scoresTable" aria-describedby="scoresDesc" role="table" aria-label="Tabel daftar skor tertinggi">
+      <thead>
+        <tr>
+          <th scope="col">Posisi</th>
+          <th scope="col">Nama Pemain</th>
+          <th scope="col">Skor (Poin)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td colspan="3" class="center-text">Belum ada skor</td></tr>
+      </tbody>
+    </table>
+    <p id="scoresDesc">
+      Skor tertinggi akan diperbarui secara otomatis berdasarkan permainan.
+    </p>
+  </section>
+</main>
+
+<script>
+(() => {
+  'use strict';
+
+  const loginForm = document.getElementById('loginForm');
+  const playerNameInput = document.getElementById('playerName');
+  const scoreSection = document.getElementById('scoreSection');
+  const scoresTableBody = document.querySelector('#scoresTable tbody');
+  const leaderboardToggleBtn = document.getElementById('leaderboardToggleBtn');
+
+  const SCORES_STORAGE_KEY = 'snakesandladders_scores';
+
+  function getScores() {
+    const data = localStorage.getItem(SCORES_STORAGE_KEY);
+    if (!data) return [];
+    try {
+      const arr = JSON.parse(data);
+      if(Array.isArray(arr)) return arr;
+      return [];
+    } catch {
+      return [];
+    }
+  }
+  function saveScores(scores) {
+    localStorage.setItem(SCORES_STORAGE_KEY, JSON.stringify(scores));
+  }
+  function renderScoresTable(scores){
+    scoresTableBody.innerHTML = '';
+    if(scores.length === 0){
+      scoresTableBody.innerHTML = '<tr><td colspan="3" class="center-text">Belum ada skor</td></tr>';
+      return;
+    }
+    scores.forEach((score,idx)=>{
+      const tr = document.createElement('tr');
+      const posTd = document.createElement('td');
+      posTd.textContent = idx+1;
+      const nameTd = document.createElement('td');
+      nameTd.textContent = score.name;
+      const pointsTd = document.createElement('td');
+      pointsTd.textContent = score.points;
+      tr.appendChild(posTd);
+      tr.appendChild(nameTd);
+      tr.appendChild(pointsTd);
+      scoresTableBody.appendChild(tr);
+    });
+  }
+
+  leaderboardToggleBtn.addEventListener('click', () => {
+    if(scoreSection.hidden){
+      renderScoresTable(getScores());
+      scoreSection.hidden = false;
+      leaderboardToggleBtn.textContent = 'Sembunyikan Daftar Skor Tertinggi';
+    } else {
+      scoreSection.hidden = true;
+      leaderboardToggleBtn.textContent = 'Lihat Daftar Skor Tertinggi';
+    }
+  });
+
+  loginForm.addEventListener('submit', e => {
+    e.preventDefault();
+    const name = playerNameInput.value.trim();
+    if(name.length < 2){
+      alert('Mohon masukkan nama yang valid (minimal 2 karakter).');
+      playerNameInput.focus();
+      return;
+    }
+    // Save player name to sessionStorage for next page
+    sessionStorage.setItem('playerName', name);
+    // Redirect to game page
+    window.location.href = 'game.html';
+  });
+
+})();
+</script>
+</body>
+</html>
+

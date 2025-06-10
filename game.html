@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Permainan - Game Edukasi Ular Tangga Narkotika</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap');
+  :root {
+    --color-bg: #ffffff;
+    --color-text-base: #6b7280;
+    --color-primary: #111827;
+    --color-primary-light: #374151;
+    --color-secondary: #2563eb;
+    --color-accent: #059669;
+    --color-accent-hover: #047857;
+    --border-radius: 0.75rem;
+    --shadow-light: rgba(0, 0, 0, 0.05);
+    --transition-speed: 0.3s;
+  }
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+  body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    background: var(--color-bg);
+    color: var(--color-text-base);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  header {
+    position: sticky;
+    top: 0;
+    background: var(--color-bg);
+    border-bottom: 1px solid var(--shadow-light);
+    padding: 2rem 3rem;
+    font-weight: 800;
+    font-size: 3.5rem;
+    color: var(--color-primary);
+    user-select: none;
+    text-align: center;
+    box-shadow: 0 4px 8px var(--shadow-light);
+    z-index: 20;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  #headerLogo {
+    position: absolute;
+    top: 16px;
+    right: 32px;
+    height: 56px;
+    width: 56px;
+    border-radius: 9999px;
+    overflow: hidden;
+    box-shadow: 0 0 12px var(--shadow-light);
+    user-select: none;
+  }
+  #headerLogo img {
+    height: 100%;
+    width: 100%;
+    object-fit: contain;
+  }
+  main {
+    max-width: 960px;
+    margin: 3rem auto 4rem;
+    padding: 0 2rem;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+  }
+  #gameSection {
+    background: white;
+    border-radius: var(--border-radius);
+    box-shadow: 0 8px 24px var(--shadow-light);
+    padding: 2rem 3rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  #board {
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    gap: 8px;
+    padding: 8px 0;
+  }
+  .cell {
+    background: white;
+    border-radius: var(--border-radius);
+    aspect-ratio: 1/1;
+    position: relative;
+    padding: 0.6rem 1rem 1.8rem;
+    box-shadow: 0 4px 12px var(--shadow-light);
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: var(--color-primary-light);
+    cursor: pointer;
+    user-select: none;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: background-color var(--transition-speed);
+  }
+  .cell:hover {
+    background-color: #f5faff;
+  }
+  .cell-number {
+    position: absolute;
+    top: 0.4rem;
+    right: 0.8rem;
+    font-size: 0.65rem;
+    color: var(--color-text-base);
+  }
+  .token {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background-color: var(--color-accent);
+    border: 3px solid var(--color-primary);
+    color: white;
+    font-weight: 700;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    bottom: 14px;
+    left: 50%;
+    transform: translateX(-50%);
+    pointer-events: none;
+  }
+  .ladder {
+    position: absolute;
+    left: 6px;
+    bottom: 6px;
+    font-size: 1.8rem;
+    color: var(--color-accent);
+  }
+  .snake {
+    position: absolute;
+    left: 6px;
+    bottom: 6px;
+    font-size: 1.8rem;
+    color: #dc2626;
+  }
+  #controls {
+    display: flex;
+    gap: 1.8rem;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  #rollDiceBtn {
+    background-color: var(--color-accent);
+    color: white;
+    font-weight: 700;
+    font-size: 1.4rem;
+    padding: 1rem 3.2rem;
+    border-radius: var(--border-radius);
+    border: none;
+    cursor: pointer;
+    transition: background-color var(--transition-speed);
+    user-select: none;
+    min-width: 170px;
+  }
+  #rollDiceBtn:hover,
+  #rollDiceBtn:focus {
+    background-color: var(--color-accent-hover);
+    outline: none;
+  }
+  #rollDiceBtn:disabled {
+    background-color: #a5d6a7;
+    cursor: not-allowed;
+  }
+  #exitBtn {
+    background-color: #dc2626;
+    color: white;
+    font-weight: 700;
+    font-size: 1.4rem;
+    padding: 1rem 3rem;
+    border-radius: var(--border-radius);
+    border: none;
+    cursor: pointer;
+    transition: background-color var(--transition-speed);
+    user-select: none;
+    min-width: 140px;
+  }
+  #exitBtn:hover,
+  #exitBtn:focus {
+    background-color: #b91c1c;
+    outline: none;
+  }
+  #diceResult {
+    font-weight: 700;
+    font-size: 2rem;
+    color: var(--color-primary);
+    min-width: 3rem;
+    text-align: center;
+    user-select: none;
+    width: 58px;
+  }
+  #positionInfo, #pointsInfo {
+    font-weight: 700;
+    font-size: 1.3rem;
+    color: var(--color-primary-light);
+    user-select: none;
+    min-width: 170px;
+  }
+  #gameMessage {
+    text-align: center;
+    font-weight: 700;
+    color: var(--color-accent);
+    font-size: 1.2rem;
+    min-height: 1.8rem;
+    user-select: none;
+    margin-top: 0.7rem;
+  }
+  /* Modal */
+  #questionModal {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(20,20,20,0.65);
+    backdrop-filter: blur(5px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 150;
+  }
+  #questionModal.show {
+    display: flex;
+  }
+  #questionBox {
+    background: white;
+    border-radius: var(--border-radius);
+    max-width: 520px;
+    width: 90%;
+    padding: 2.5rem 3.5rem;
+    box-shadow: 0 10px 36px rgba(0, 0, 0, 0.15);
+    display: flex;
+    flex-direction: column;
+    user-select: none;
+  }
+  #questionTitle {
+    font-weight: 800;
+    font-size: 2rem;
+    color: var(--color-primary);
+    margin: 0 0 1rem 0;
+  }
+  #questionText {
+    font-size: 1.1rem;
+    color: var(--color-primary-light);
+    margin-bottom: 2rem;
+    line-height: 1.4;
+  }
+  #answersList {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  .answerBtn {
+    font-weight: 600;
+    font-size: 1.1rem;
+    padding: 0.9rem 1.3rem;
+    border-radius: var(--border-radius);
+    border: 2px solid var(--color-accent);
+    background: white;
+    color: var(--color-primary);
+    cursor: pointer;
+    transition: background-color var(--transition-speed), color var(--transition-speed);
+    text-align: left;
+    user-select: none;
+  }
+  .answerBtn:hover:not(:disabled),
+  .answerBtn:focus:not(:disabled) {
+    background-color: var(--color-accent);
+    color: white;
+    outline: none;
+  }
+  .answerBtn.correct {
+    background-color: #16a34a;
+    border-color: #16a34a;
+    color: white;
+    cursor: default;
+  }
+  .answerBtn.wrong {
+    background-color: #dc2626;
+    border-color: #dc2626;
+    color: white;
+    cursor: default;
+  }
+  #feedbackText {
+    font-weight: 700;
+    font-size: 1.1rem;
+    margin-top: 1.5rem;
+    color: var(--color-primary-light);
+    min-height: 1.6rem;
+    text-align: center;
+  }
+  #closeQuestionBtn {
+    margin-top: 2.4rem;
+    align-self: center;
+    background-color: var(--color-accent);
+    border: none;
+    color: white;
+    font-weight: 700;
+    font-size: 1.3rem;
+    padding: 0.85rem 2.8rem;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: background-color var(--transition-speed);
+    width: 100%;
+    max-width: 220px;
+    user-select: none;
+  }
+  #closeQuestionBtn:hover,
+  #closeQuestionBtn:focus {
+    background-color: var(--color-accent-hover);
+    outline: none;
+  }
+  @media (max-width: 600px) {
+    header {
+      font-size: 2.8rem;
+      padding: 1.25rem 1.75rem;
+    }
+    main {
+      max-width: 100%;
+      margin: 2rem 1rem 3rem;
+      padding: 0 1rem;
+      gap: 1.5rem;
+    }
+    #board {
+      gap: 5px;
+      padding: 5px 0;
+    }
+    .cell {
+      font-size: 0.75rem;
+      padding-bottom: 1.5rem;
+    }
+    .token {
+      width: 24px;
+      height: 24px;
+      font-size: 16px;
+      bottom: 10px;
+    }
+    #rollDiceBtn, #exitBtn {
+      font-size: 1rem;
+      padding: 0.65rem 2rem;
+      min-width: auto;
+      flex: 1 1 auto;
+    }
+    #closeQuestionBtn {
+      font-size: 1rem;
+      padding: 0.55rem 1.4rem;
+      max-width: 140px;
+    }
+  }
+</style>
+</head>
+<body>
+<header>
+  Game Edukasi Ular Tangga Narkotika
+  <div id="headerLogo" aria-label="Logo SMAGA Unggulan Tenggarong" role="img" title="SMAGA Unggulan Tenggarong">
+    <img src="https://pbs.twimg.com/profile_images/2461744237/sman_3_400x400.png" alt="Logo SMAGA Unggulan Tenggarong" />
+  </div>
+</header>
+<main>
+  <section id="gameSection" aria-label="Permainan ular tangga">
+    <section aria-label="Papan permainan ular tangga edukasi narkotika">
+      <div id="board" role="grid" tabindex="0" aria-live="polite" aria-relevant="additions"></div>
+    </section>
+    <section id="controls" aria-label="Kontrol permainan" style="margin-top:1rem; text-align:center;">
+      <button id="rollDiceBtn" aria-label="Lemparkan dadu untuk maju">Lempar Dadu 🎲</button>
+      <button id="exitBtn" aria-label="Keluar dari permainan">Keluar</button>
+      <div id="diceResult" aria-live="polite" aria-atomic="true" aria-label="Hasil lemparan dadu">-</div>
+      <div id="positionInfo" aria-live="polite" aria-atomic="true" aria-label="Posisi pemain saat ini">Posisi Anda: 1</div>
+      <div id="pointsInfo" style="color: var(--color-accent);">Poin Anda: 0</div>
+      <div id="gameMessage" role="alert" aria-live="assertive"></div>
+    </section>
+    <div id="questionModal" role="dialog" aria-modal="true" aria-labelledby="questionTitle" aria-describedby="questionText">
+      <div id="questionBox">
+        <h2 id="questionTitle">Tantangan</h2>
+        <div id="questionText">Pertanyaan akan tampil di sini...</div>
+        <div id="answersList" role="list"></div>
+        <div id="feedbackText" aria-live="assertive"></div>
+        <button id="closeQuestionBtn" aria-label="Tutup tantangan">Lanjutkan</button>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script>
+(() => {
+  'use strict';
+
+  // Check for player name; redirect to login if missing
+  const playerName = sessionStorage.getItem('playerName');
+  if (!playerName || playerName.trim().length < 2) {
+    alert('Nama pemain tidak ditemukan, silakan masuk terlebih dahulu.');
+    window.location.href = 'login.html';
+    return;
+  }
+
+  // Elements
+  const board = document.getElementById('board');
+  const rollDiceBtn = document.getElementById('rollDiceBtn');
+  const exitBtn = document.getElementById('exitBtn');
+  const diceResultEl = document.getElementById('diceResult');
+  const positionInfoEl = document.getElementById('positionInfo');
+  const pointsInfoEl = document.getElementById('pointsInfo');
+  const gameMessageEl = document.getElementById('gameMessage');
+  const questionModal = document.getElementById('questionModal');
+  const questionTextEl = document.getElementById('questionText');
+  const answersListEl = document.getElementById('answersList');
+  const feedbackTextEl = document.getElementById('feedbackText');
+  const closeQuestionBtn = document.getElementById('closeQuestionBtn');
+
+  const SCORES_STORAGE_KEY = 'snakesandladders_scores';
+
+  let playerPos = 1;
+  let playerPoints = 0;
+  let isAnimating = false;
+
+  const ladders = {
+    3: 22,
+    5: 8,
+    11: 26,
+    20: 29,
+    27: 56,
+    36: 44,
+    51: 67,
+    71: 92,
+    80: 99
+  };
+  const snakes = {
+    17: 4,
+    19: 7,
+    21: 9,
+    43: 34,
+    54: 31,
+    62: 39,
+    64: 60,
+    87: 24,
+    93: 73,
+    95: 75,
+    98: 79
+  };
+
+  const questionsPool = [
+    { question: "Apa golongan narkotika yang memiliki risiko paling tinggi?", options: ["Golongan I", "Golongan II", "Golongan III", "Golongan IV"], answerIndex: 0 },
+    { question: "Pasal berapa dalam UU Narkotika yang mengatur penyalahgunaan narkotika?", options: ["Pasal 1", "Pasal 21", "Pasal 4", "Pasal 127"], answerIndex: 3 },
+    { question: "Apa tujuan utama Undang-Undang Narkotika di Indonesia?", options: ["Mengatur perdagangan narkotika", "Melindungi kesehatan masyarakat dari narkotika", "Memperbolehkan penggunaan narkotika terbatas", "Memberikan izin produksi narkotika"], answerIndex: 1 },
+    { question: "Apa efek berbahaya utama penggunaan narkotika?", options: ["Meningkatkan energi berlebih", "Ketergantungan fisik dan mental", "Memperbaiki daya tahan tubuh", "Menyembuhkan penyakit"], answerIndex: 1 },
+    { question: "Menurut UUD 1945, hak asasi manusia diatur untuk?", options: ["Menjamin kesejahteraan ekonomi", "Melindungi dan menjamin hak asasi manusia", "Menetapkan sistem pemerintahan", "Mengatur hubungan luar negeri"], answerIndex: 1 },
+    { question: "Pada pasal berapa UUD 1945 mengatur tentang perlindungan hukum?", options: ["Pasal 27 ayat 1", "Pasal 28", "Pasal 30", "Pasal 33"], answerIndex: 0 },
+    { question: "Apa yang dimaksud dengan penyalahgunaan narkotika?", options: ["Menggunakan narkotika menurut resep dokter", "Penggunaan narkotika tanpa izin dan tidak sesuai aturan", "Produksi narkotika legal", "Distribusi narkotika dengan izin"], answerIndex: 1 },
+    { question: "Bagaimana cara mencegah penyalahgunaan narkotika menurut undang-undang?", options: ["Dengan pendidikan dan penyuluhan", "Meningkatkan produksi narkotika", "Melarang semua aktivitas olahraga", "Memperluas perdagangan narkotika"], answerIndex: 0 },
+    { question: "Apa sanksi utama bagi pelanggar UU Narkotika?", options: ["Peringatan saja", "Penjara dan denda berat", "Diberikan penghargaan", "Hanya pengawasan"], answerIndex: 1 },
+    { question: "Siapa yang bertanggung jawab menegakkan UU Narkotika di Indonesia?", options: ["Pemerintah dan aparat penegak hukum", "Masyarakat umum", "Perusahaan swasta", "Media massa"], answerIndex: 0 }
+  ];
+
+  let questionsByCell = {};
+
+  function initQuestions(){
+    questionsByCell = {};
+    for(let i=1; i<=100; i++){
+      const qIndex = Math.floor(Math.random() * questionsPool.length);
+      questionsByCell[i] = JSON.parse(JSON.stringify(questionsPool[qIndex]));
+    }
+  }
+
+  function getScores() {
+    const data = localStorage.getItem(SCORES_STORAGE_KEY);
+    if (!data) return [];
+    try {
+      const arr = JSON.parse(data);
+      if(Array.isArray(arr)) return arr;
+      return [];
+    } catch {
+      return [];
+    }
+  }
+  function saveScores(scores) {
+    localStorage.setItem(SCORES_STORAGE_KEY, JSON.stringify(scores));
+  }
+  function saveScore(points){
+    const scores = getScores();
+    scores.push({name: playerName, points: Math.max(points, 0)});
+    scores.sort((a,b) => b.points - a.points);
+    if(scores.length > 10) scores.length = 10;
+    saveScores(scores);
+  }
+
+  function renderScoresTable(){
+    // This could be moved to a separate screen or expanded as needed
+  }
+
+  function buildBoard(){
+    board.innerHTML = '';
+    for(let row=9; row>=0; row--){
+      const leftToRight = row % 2 === 0;
+      for(let col=0; col<10; col++){
+        const number = leftToRight ? (row*10 + col + 1) : (row*10 + (9-col) + 1);
+        const cell = document.createElement('div');
+        cell.className = 'cell';
+        cell.dataset.cell = number;
+        cell.setAttribute('role', 'gridcell');
+        cell.setAttribute('aria-label', `Kotak nomor ${number}, tantangan narkotika`);
+        cell.title = questionsByCell[number].question;
+
+        const numEl = document.createElement('div');
+        numEl.className = 'cell-number';
+        numEl.textContent = number;
+        cell.appendChild(numEl);
+
+        if(ladders[number]){
+          const ladderEl = document.createElement('span');
+          ladderEl.className = 'ladder';
+          ladderEl.textContent = '↗';
+          ladderEl.title = `Tangga ke kotak ${ladders[number]}`;
+          cell.appendChild(ladderEl);
+        }
+        if(snakes[number]){
+          const snakeEl = document.createElement('span');
+          snakeEl.className = 'snake';
+          snakeEl.textContent = '↘';
+          snakeEl.title = `Ular ke kotak ${snakes[number]}`;
+          cell.appendChild(snakeEl);
+        }
+        board.appendChild(cell);
+      }
+    }
+  }
+
+  function placePlayer(){
+    document.querySelectorAll('.token').forEach(t => t.remove());
+    const cell = board.querySelector(`.cell[data-cell='${playerPos}']`);
+    if(!cell) return;
+    const token = document.createElement('div');
+    token.className = 'token';
+    token.textContent = 'P';
+    cell.appendChild(token);
+  }
+
+  function rollDice(){
+    return Math.floor(Math.random() * 6) + 1;
+  }
+
+  async function movePlayer(steps){
+    rollDiceBtn.disabled = true;
+    isAnimating = true;
+    gameMessageEl.textContent = '';
+    for(let i=0; i<steps; i++){
+      if(playerPos < 100){
+        playerPos++;
+        placePlayer();
+        positionInfoEl.textContent = `Posisi Anda: ${playerPos}`;
+        await new Promise(r=>setTimeout(r,300));
+      }
+    }
+    isAnimating = false;
+    rollDiceBtn.disabled = false;
+  }
+
+  function updatePoints(){
+    pointsInfoEl.textContent = `Poin Anda: ${playerPoints}`;
+  }
+
+  function showModal(){
+    questionModal.classList.add('show');
+  }
+  function hideModal(){
+    questionModal.classList.remove('show');
+  }
+
+  function askQuestion(cellNumber){
+    return new Promise(resolve => {
+      const q = questionsByCell[cellNumber];
+      if(!q){
+        resolve(null);
+        return;
+      }
+      questionTextEl.textContent = q.question;
+      answersListEl.innerHTML = '';
+      feedbackTextEl.textContent = '';
+      closeQuestionBtn.disabled = true;
+
+      q.options.forEach((opt, idx) => {
+        const btn = document.createElement('button');
+        btn.className = 'answerBtn';
+        btn.type = 'button';
+        btn.textContent = opt;
+        btn.onclick = () => {
+          Array.from(answersListEl.children).forEach(b => b.disabled = true);
+          if(idx === q.answerIndex){
+            btn.classList.add('correct');
+            feedbackTextEl.textContent = 'Jawaban benar!';
+            resolve(true);
+          } else {
+            btn.classList.add('wrong');
+            feedbackTextEl.textContent = 'Jawaban salah.';
+            answersListEl.children[q.answerIndex]?.classList.add('correct');
+            resolve(false);
+          }
+          closeQuestionBtn.disabled = false;
+        };
+        answersListEl.appendChild(btn);
+      });
+
+      closeQuestionBtn.onclick = () => {
+        hideModal();
+        resolve(null);
+      };
+
+      showModal();
+    });
+  }
+
+  async function processCell(){
+    if(ladders[playerPos]){
+      gameMessageEl.textContent = 'Anda menemukan tangga! Jawablah pertanyaan untuk naik tangga dan dapat poin.';
+      const correct = await askQuestion(playerPos);
+      if(correct){
+        playerPoints += 10;
+        playerPos = ladders[playerPos];
+        placePlayer();
+        positionInfoEl.textContent = `Posisi Anda: ${playerPos}`;
+        gameMessageEl.textContent = 'Jawaban benar! Anda naik tangga dan mendapat 10 poin.';
+      } else {
+        gameMessageEl.textContent = 'Jawaban salah. Anda tidak naik tangga dan tidak mendapat poin.';
+      }
+      updatePoints();
+      return;
+    }
+    if(snakes[playerPos]){
+      gameMessageEl.textContent = 'Anda tergigit ular! Jawablah pertanyaan untuk menghindari turunnya.';
+      const correct= await askQuestion(playerPos);
+      if(correct){
+        playerPoints += 10;
+        gameMessageEl.textContent = 'Jawaban benar! Anda berhasil menghindari turunnya dan mendapat 10 poin.';
+      } else {
+        playerPoints -= 5;
+        playerPos = Math.max(playerPos - 2, 1);
+        placePlayer();
+        positionInfoEl.textContent = `Posisi Anda: ${playerPos}`;
+        gameMessageEl.textContent = 'Jawaban salah! Anda turun 2 kotak dan kehilangan 5 poin.';
+      }
+      updatePoints();
+      return;
+    }
+    if(questionsByCell[playerPos]){
+      gameMessageEl.textContent = 'Tantangan di kotak ini! Jawab pertanyaan berikut.';
+      const correct = await askQuestion(playerPos);
+      if(correct){
+        playerPoints += 5;
+        gameMessageEl.textContent = 'Jawaban benar! Anda mendapat 5 poin.';
+      } else {
+        playerPoints -= 2;
+        playerPos = Math.max(playerPos - 2, 1);
+        placePlayer();
+        positionInfoEl.textContent = `Posisi Anda: ${playerPos}`;
+        gameMessageEl.textContent = 'Jawaban salah! Anda turun 2 kotak dan kehilangan 2 poin.';
+      }
+      updatePoints();
+    } else {
+      gameMessageEl.textContent = '';
+    }
+  }
+
+  async function onRollDice(){
+    if(isAnimating || rollDiceBtn.disabled) return;
+    const diceValue = rollDice();
+    diceResultEl.textContent = diceValue;
+    await movePlayer(diceValue);
+    if(playerPos >= 100){
+      gameMessageEl.textContent = `Selamat, ${playerName}! Anda mencapai akhir dengan poin: ${playerPoints}`;
+      rollDiceBtn.disabled = true;
+      saveScore(playerPoints);
+      return;
+    }
+    await processCell();
+  }
+
+  function resetGame(){
+    playerPos = 1;
+    playerPoints = 0;
+    placePlayer();
+    positionInfoEl.textContent = `Posisi Anda: ${playerPos}`;
+    diceResultEl.textContent = '-';
+    gameMessageEl.textContent = '';
+    updatePoints();
+    rollDiceBtn.disabled = false;
+  }
+
+  exitBtn.addEventListener('click', () => {
+    sessionStorage.removeItem('playerName');
+    window.location.href = 'login.html';
+  });
+
+  rollDiceBtn.addEventListener('click', onRollDice);
+
+  // Initialize game
+  initQuestions();
+  buildBoard();
+  resetGame();
+})();
+</script>
+</body>
+</html>
